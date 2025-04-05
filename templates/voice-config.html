@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configure Oliver Cowdery's Voice</title>
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Libre+Baskerville&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Libre Baskerville', serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #291500;
+            background-color: #f8f6f1;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("{{ url_for('static', filename='priesthood_resotration_historic_sites.png') }}");
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: -1;
+        }
+        
+        h1, h2 {
+            font-family: 'IM Fell English', serif;
+            color: #4e2500;
+            text-align: center;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .container {
+            background-color: rgba(248, 240, 227, 0.85);
+            border: 1px solid #d4c7a9;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(139, 69, 19, 0.2);
+            padding: 25px;
+            margin-top: 20px;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 15px;
+            padding: 12px;
+            font-family: 'IM Fell English', serif;
+            border: 1px solid #d4c7a9;
+            border-radius: 5px;
+            background-color: rgba(255, 250, 240, 0.9);
+            font-size: 16px;
+            line-height: 1.5;
+            color: #291500;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #713a16;
+            color: #f8f0e3;
+            border: none;
+            border-radius: 5px;
+            font-family: 'IM Fell English', serif;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        button:hover {
+            background-color: #8a4d28;
+        }
+        
+        .controls {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 20px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-family: 'IM Fell English', serif;
+            font-weight: bold;
+            color: #4e2500;
+        }
+        
+        select, input {
+            margin-bottom: 15px;
+            padding: 8px;
+            width: 100%;
+            border: 1px solid #d4c7a9;
+            border-radius: 5px;
+            background-color: rgba(255, 250, 240, 0.9);
+        }
+        
+        .preset {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: rgba(226, 215, 195, 0.7);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .preset:hover {
+            background-color: rgba(198, 179, 137, 0.7);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #713a16;
+            text-decoration: none;
+            font-family: 'IM Fell English', serif;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Configure Oliver Cowdery's Voice</h1>
+        <p style="text-align: center; font-style: italic;">Find the voice that best represents Oliver Cowdery as he would have sounded on May 15, 1829.</p>
+        
+        <textarea id="textToSpeak">I, Oliver Cowdery, bear solemn witness that on this day, May 15, 1829, John the Baptist appeared unto Joseph Smith and myself, conferring upon us the Priesthood of Aaron. We then proceeded to the Susquehanna River where I first baptized Joseph, and he then baptized me, in fulfillment of the angel's command.</textarea>
+        
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button id="speakButton">Hear Oliver Speak</button>
+            <button id="stopButton">Cease Speaking</button>
+        </div>
+        
+        <div class="controls">
+            <div>
+                <div class="control-group">
+                    <label for="voiceSelect">Select Voice:</label>
+                    <select id="voiceSelect"></select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="rate">Rate of Speech: <span id="rateValue">1.15</span></label>
+                    <input type="range" id="rate" min="0.5" max="1.5" value="1.15" step="0.05">
+                </div>
+                
+                <div class="control-group">
+                    <label for="pitch">Pitch: <span id="pitchValue">0.9</span></label>
+                    <input type="range" id="pitch" min="0.5" max="1.5" value="0.9" step="0.05">
+                </div>
+            </div>
+            
+            <div>
+                <h2>Sample Declarations</h2>
+                <div class="preset" onclick="setPresetText(1)">
+                    "This morning, John the Baptist appeared to us as we prayed, his voice clear and powerful as he laid his hands upon us, saying, 'Upon you my fellow servants, in the name of Messiah, I confer the priesthood of Aaron.'"
+                </div>
+                <div class="preset" onclick="setPresetText(2)">
+                    "The emotions I felt today were profound—a mix of joy, awe, and a deep sense of responsibility for the authority now bestowed upon us by heavenly messengers."
+                </div>
+                <div class="preset" onclick="setPresetText(3)">
+                    "I, Oliver Cowdery, do solemnly testify that the priesthood has been restored in these latter days, and I stand as witness to this marvelous work and wonder which has commenced in our time."
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div style="text-align: center;">
+        <a href="/" class="back-link">← Return to Conversation with Oliver</a>
+    </div>
+
+    <script>
+        // Initialize variables
+        let voices = [];
+        const voiceSelect = document.getElementById('voiceSelect');
+        const textToSpeak = document.getElementById('textToSpeak');
+        const speakButton = document.getElementById('speakButton');
+        const stopButton = document.getElementById('stopButton');
+        const rateInput = document.getElementById('rate');
+        const rateValue = document.getElementById('rateValue');
+        const pitchInput = document.getElementById('pitch');
+        const pitchValue = document.getElementById('pitchValue');
+        
+        // Function to populate voice list
+        function loadVoices() {
+            voices = speechSynthesis.getVoices();
+            voiceSelect.innerHTML = '';
+            
+            // Filter ONLY for English voices
+            const englishVoices = voices.filter(voice => 
+                voice.lang.includes('en-')
+            );
+            
+            // Use only English voices or show a message if none found
+            if (englishVoices.length === 0) {
+                const option = document.createElement('option');
+                option.textContent = 'No English voices found';
+                voiceSelect.appendChild(option);
+                return;
+            }
+            
+            let ukMaleIndex = -1;
+            
+            englishVoices.forEach((voice, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${voice.name} (${voice.lang})`;
+                
+                // Look for Google UK English Male specifically
+                if (voice.name === 'Google UK English Male' && voice.lang === 'en-GB') {
+                    option.selected = true;
+                    ukMaleIndex = index;
+                }
+                
+                voiceSelect.appendChild(option);
+            });
+            
+            // If Google UK English Male not found, try other alternatives
+            if (ukMaleIndex === -1) {
+                // Look for any UK male voice
+                for (let i = 0; i < voiceSelect.options.length; i++) {
+                    const voice = englishVoices[i];
+                    if ((voice.name.includes('UK') || voice.lang === 'en-GB') && 
+                        (voice.name.includes('Male'))) {
+                        voiceSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+                
+                // If still no UK male voice, try any male voice
+                if (voiceSelect.selectedIndex === -1) {
+                    for (let i = 0; i < voiceSelect.options.length; i++) {
+                        if (englishVoices[i].name.includes('Male')) {
+                            voiceSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                    
+                    // If no male voice at all, just select the first one
+                    if (voiceSelect.selectedIndex === -1 && englishVoices.length > 0) {
+                        voiceSelect.selectedIndex = 0;
+                    }
+                }
+            }
+        }
+        
+        // Chrome loads voices asynchronously
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
+        
+        // Initial load of voices
+        setTimeout(loadVoices, 100);
+        
+        // Speak function
+        function speak() {
+            // Cancel any ongoing speech
+            speechSynthesis.cancel();
+            
+            if (textToSpeak.value !== '') {
+                // Create utterance
+                const utterance = new SpeechSynthesisUtterance(textToSpeak.value);
+                
+                // Force English language
+                utterance.lang = 'en-US';
+                
+                // Get only English voices
+                const englishVoices = voices.filter(voice => voice.lang.includes('en-'));
+                
+                // Set selected voice if it's an English voice
+                if (voiceSelect.selectedIndex !== -1 && englishVoices.length > 0) {
+                    utterance.voice = englishVoices[voiceSelect.selectedIndex];
+                }
+                
+                // Set rate and pitch
+                utterance.rate = parseFloat(rateInput.value);
+                utterance.pitch = parseFloat(pitchInput.value);
+                
+                // Speak
+                speechSynthesis.speak(utterance);
+                
+                // Save settings to local storage
+                localStorage.setItem('oliverVoiceIndex', voiceSelect.selectedIndex);
+                localStorage.setItem('oliverVoiceRate', rateInput.value);
+                localStorage.setItem('oliverVoicePitch', pitchInput.value);
+            }
+        }
+        
+        // Set preset text function
+        function setPresetText(presetNumber) {
+            switch (presetNumber) {
+                case 1:
+                    textToSpeak.value = "This morning, John the Baptist appeared to us as we prayed, his voice clear and powerful as he laid his hands upon us, saying, 'Upon you my fellow servants, in the name of Messiah, I confer the priesthood of Aaron.'";
+                    break;
+                case 2:
+                    textToSpeak.value = "The emotions I felt today were profound—a mix of joy, awe, and a deep sense of responsibility for the authority now bestowed upon us by heavenly messengers.";
+                    break;
+                case 3:
+                    textToSpeak.value = "I, Oliver Cowdery, do solemnly testify that the priesthood has been restored in these latter days, and I stand as witness to this marvelous work and wonder which has commenced in our time.";
+                    break;
+            }
+            
+            // Auto-scroll to the top of the textarea
+            textToSpeak.scrollTop = 0;
+        }
+        
+        // Event listeners
+        speakButton.addEventListener('click', speak);
+        
+        stopButton.addEventListener('click', () => {
+            speechSynthesis.cancel();
+        });
+        
+        rateInput.addEventListener('input', () => {
+            rateValue.textContent = rateInput.value;
+        });
+        
+        pitchInput.addEventListener('input', () => {
+            pitchValue.textContent = pitchInput.value;
+        });
+        
+        // Load saved voice settings if available
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const savedVoiceIndex = localStorage.getItem('oliverVoiceIndex');
+                const savedRate = localStorage.getItem('oliverVoiceRate');
+                const savedPitch = localStorage.getItem('oliverVoicePitch');
+                
+                if (savedVoiceIndex !== null && voiceSelect.options.length > savedVoiceIndex) {
+                    voiceSelect.selectedIndex = savedVoiceIndex;
+                }
+                
+                if (savedRate !== null) {
+                    rateInput.value = savedRate;
+                    rateValue.textContent = savedRate;
+                }
+                
+                if (savedPitch !== null) {
+                    pitchInput.value = savedPitch;
+                    pitchValue.textContent = savedPitch;
+                }
+            }, 500); // Slight delay to ensure voices are loaded
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,7 @@
+cowdery_model/
+*.pt
+*.safetensors
+*.bin
+.env
+__pycache__/
+*.pyc

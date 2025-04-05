@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talk with Oliver Cowdery</title>
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Libre+Baskerville&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Libre Baskerville', serif;
+            color: #291500;
+            background-color: #f8f6f1;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("{{ url_for('static', filename='priesthood_resotration_historic_sites.png') }}");
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            min-height: calc(100vh - 40px);
+        }
+        
+        .left-panel {
+            flex: 0 0 35%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .right-panel {
+            flex: 0 0 65%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        h1 {
+            font-family: 'IM Fell English', serif;
+            text-align: center;
+            color: #4e2500;
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            font-family: 'IM Fell English', serif;
+            font-style: italic;
+            text-align: center;
+            margin-top: 0;
+            color: #6e4d25;
+        }
+        
+        /* Portrait container styling */
+        #portrait-container {
+            width: 100%;
+            max-width: 300px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        #portrait {
+            width: 100%;
+            height: auto;
+            border: 12px solid #713a16;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .portrait-caption {
+            font-style: italic;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .parchment {
+            background-color: rgba(248, 240, 227, 0.85);
+            border: 1px solid #d4c7a9;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(139, 69, 19, 0.2);
+            padding: 15px;
+        }
+        
+        #messages {
+            height: 60vh;
+            overflow-y: scroll;
+            margin-bottom: 20px;
+            padding: 20px;
+            scroll-behavior: smooth;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXWBgYGHh4d5eXlzc3OLi4ubm5uVlZWPj4+NjY19fX2JiYl/f39ra2uRkZGZmZlpaWmXl5dvb29xcXGTk5NnZ2c4zIgLAAAFDklEQVR4Ac3d0WaTMBSG4YNIQpK2tK1KrfD+r7kQcsBS/dn+6jwzhLH5ODBB/P76+bnlHURFQ5j/SYXOESh9MpCfDMT+nRvyT0pnWX8yYKEzhiJMyS8G/GLAL0b2zzuP7M31d8AVSlOZAsr+zZdwRebhJAOWlm9MBqbkqYjRKTdFujBTZBjCJRkiUE3J9hbuiiXUBulCt0W6yEPu3JepwsRLso5AIXfNxbfc0/SDhxoTRlZ/agvPc19+qDEcCeSmZL7nRU/VG6ZiWxL1nhd+bA9MxaMkP/Oq32+i2DPb4qXP7FeISX8TpRILn9mvERO27xbyFkpT4f0aMX43jUDuIeF1+w1igp8MMMlg7h/ZbxIT/GSAOTIlmPt79nvE+N0aWZN77hts4j1kk3vWG2x+RmKXe/KNFa0lUcg9+QZLH1FIuA75e9YyUigC5aSoN7+5BzmzTbP4m/6B7XqLwTNHpVG8qL9hfeQoY5VxspX3dqxPaPCE5pjXx2xvWB/R8Amd2z7dn4/Y+NUxPeQ5T3ej2OAVZxPydDdq5Le46SF3eYGxMfDJ9iO2dluW3sJ7Pt2Nzd/Q8X1kgOWLgadvi7b4Kyqj8KQ3zc3Zyic0I/OUN7EjvsUQhSe8KW91qfAuzAae/l9pBb5LHoZnfBe9OmqieBZ5QRlF6Uzv8FMsKKOIcaZPY0Z/i7OQHmfWMoJQmX7iXz+pyPgZZxLHCG31E19jjgGZfsUBBlvycj/cYmF6wNTgJ6Pz/D5AktcfMGG+2E4+aFYyW5jKaxSBVlrWC65ssLxuEBW9l1nLesFVPdffQ8qoWpnVrPdnRr5N1pDuy6xlvW9jrnqLfbqW4cNj/UbxfrE9ZB8aHusNNucr7g37yNZlVrPeR6Qh76YPGW4yq1nvt1jc5c5Xnz+YvKWoN1+WvLPXnq1m6JOh3iFSJXc+eWcJszZkU+91ybsfPS1h+DzWGyb1nfyQqbx+WtUbJvUdlTKrWe9h1psv+ZCUP6hlvc/39Y/+noH6UqbeCDnkz96iiVnJemdhKm8jOlP+sZTZyvqqqJJp3tYyuZci6/szdUzWsjfvvRTRKlfvTpReRIzCQIp66/vIPvd0zf6r1vutL2F27xbF/cnwfB+RKnRUo8Wkm7w/X/+8CUPsO7kpY4+FYdJhfNO0xC6Z43qLSd3k/ZcwIJPGfJz+xrzsJIaNzGv2N2Z8i8cmIJkNfcBqbIrhvmMW8x77Kzb+HovssuXr/wLJYtJjXrO/JvOybyDR+M3I/gGWPqLDPIz/w04W/hYny6tYRpldzHPWW9zO26SOZt01yTc48soOkxcj+wdO6XtEnhhvMf3BQz4EZu1/npn6G/a5K2fmSX8f16hK7vkRKsyR46Kn/Tfm8DyJzbEo2d+zJnRU0/zNRpb1M0y5qcLUkBZjsI/Yp/lbiUX9LVN6EfGbyXdl9uTBMDLPetM8EJvzJIPQQx75y95PjHckA8Ej79OIfJmYhxkXwz4HQx4wpPiO4UxfFfWJ6cB+SkwtTPMfHEP2D5jwizH/KvDEdO+nOCYZ5PjxRMwTwwnTvRyiYLpX55bpfpnGPDWcMt3L4YDpXj+k/tRwxgz9JpkN/ZTShekB1y9lujdd/YLCj/SxM+qXZoZ+8TZwffLvNMzEFE6Z7i2yp0z36jXTvXM6ZZpPhv/KTAxT37C7ZfptpnmP9Q+3FNTtUt3KYAAAAABJRU5ErkJggg==');
+        }
+        
+        .message-container {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user {
+            align-self: flex-end;
+            background-color: rgba(198, 179, 137, 0.7);
+            border-radius: 10px 10px 0 10px;
+            padding: 10px 15px;
+            max-width: 80%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .bot {
+            align-self: flex-start;
+            background-color: rgba(245, 237, 220, 0.9);
+            border-radius: 10px 10px 10px 0;
+            padding: 10px 15px;
+            max-width: 80%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            font-family: 'IM Fell English', serif;
+            line-height: 1.5;
+        }
+        
+        .typing-indicator {
+            font-style: italic;
+            color: #8a6d3b;
+            background-color: rgba(245, 237, 220, 0.5);
+        }
+        
+        .input-container {
+            display: flex;
+            margin-top: auto;
+        }
+        
+        #textInput {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #d4c7a9;
+            border-radius: 5px;
+            font-family: 'Libre Baskerville', serif;
+            background-color: rgba(248, 240, 227, 0.85);
+            margin-right: 10px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        button {
+            padding: 10px 15px;
+            background-color: #713a16;
+            color: #f8f0e3;
+            border: none;
+            border-radius: 5px;
+            font-family: 'IM Fell English', serif;
+            cursor: pointer;
+            margin-left: 5px;
+            transition: background-color 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        button:hover {
+            background-color: #8a4d28;
+        }
+        
+        /* Tooltip styling */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: rgba(121, 85, 61, 0.9);
+            color: #f8f0e3;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-family: 'IM Fell English', serif;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            border: 1px solid #5a3d29;
+        }
+        
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(121, 85, 61, 0.9) transparent transparent transparent;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .quote {
+            font-family: 'IM Fell English', serif;
+            font-style: italic;
+            color: #6e4d25;
+            text-align: center;
+            margin: 20px 0;
+            padding: 0 20px;
+        }
+        
+        .voice-config-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .link-button {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #713a16;
+            color: #f8f0e3;
+            border: none;
+            border-radius: 5px;
+            font-family: 'IM Fell English', serif;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .link-button:hover {
+            background-color: #8a4d28;
+            text-decoration: none;
+            color: #f8f0e3;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .left-panel, .right-panel {
+                flex: none;
+                width: 100%;
+            }
+        }
+        
+        #microphone-button, #listen-button {
+            display: inline-block;
+            margin-left: 5px;
+        }
+        
+        #microphone-button button, #listen-button button {
+            background-color: #713a16;
+            color: #f8f0e3;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        #microphone-button button:hover, #listen-button button:hover {
+            background-color: #8a4d28;
+        }
+        
+        .fa-volume-up, .fa-microphone {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <h1>Oliver Cowdery</h1>
+            <p class="subtitle">May 15, 1829</p>
+            
+            <!-- Portrait container -->
+            <div id="portrait-container">
+                <img id="portrait" src="{{ url_for('static', filename='oliver.png') }}" alt="Oliver Cowdery Portrait">
+                <p class="portrait-caption">Second Elder of the Restoration</p>
+            </div>
+            
+            <div class="quote-section">
+                <p class="quote">"Therefore, Oliver Cowdery, I will make you to burn while the record shall come forth unto the children of men... For I have given him the keys of the mysteries, and the revelations."</p>
+                <p class="quote-source">Revelation to Joseph Smith,<br>       D&C 6:25, 28 (April 1829)</p>
+            </div>
+            <!-- <div class="voice-config-link">
+                <a href="/voice-config" class="link-button" target="_blank">Configure Oliver's Voice</a>
+            </div> -->
+        </div>
+        
+        <div class="right-panel">
+            <div class="parchment">
+                <h1>Conversation with Oliver</h1>
+                <p class="subtitle">The day of the Aaronic Priesthood restoration</p>
+                
+                <div id="messages"></div>
+                
+                <div class="input-container">
+                    <input type="text" id="textInput" placeholder="Write your message...">
+                    <button onclick="sendText()">Send</button>
+                    <div id="microphone-button" class="tooltip">
+                        <button onclick="speakOliversMessage()">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                        <span class="tooltiptext">Hear Oliver speak</span>
+                    </div>
+                    <div id="listen-button" class="tooltip">
+                        <button onclick="startListening()">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <span class="tooltiptext">Speak to Oliver</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        const synth = window.speechSynthesis;
+        recognition.lang = "en-US";
+        let currentResponseDiv = null;
+
+        function sendMessage(message) {
+            const messagesDiv = document.getElementById("messages");
+            
+            // Create message container for user message
+            const userMsgContainer = document.createElement("div");
+            userMsgContainer.className = "message-container";
+            const userMsg = document.createElement("p");
+            userMsg.className = "user";
+            userMsg.textContent = message;
+            userMsgContainer.appendChild(userMsg);
+            messagesDiv.appendChild(userMsgContainer);
+            
+            // Add a temporary element for the ongoing response with typing indicator
+            const botMsgContainer = document.createElement("div");
+            botMsgContainer.className = "message-container";
+            currentResponseDiv = document.createElement("p");
+            currentResponseDiv.className = "bot typing-indicator";
+            currentResponseDiv.textContent = "Oliver Cowdery is writing...";
+            botMsgContainer.appendChild(currentResponseDiv);
+            messagesDiv.appendChild(botMsgContainer);
+            
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            // Create event source for streaming response
+            const eventSource = new EventSource(`/stream-chat?message=${encodeURIComponent(message)}`);
+            
+            // For browsers that don't support FormData in EventSource requests
+            fetch("/stream-chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `message=${encodeURIComponent(message)}`
+            });
+            
+            eventSource.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                
+                if (data.partial_response) {
+                    // Update with partial response
+                    currentResponseDiv.className = "bot";
+                    currentResponseDiv.textContent = data.partial_response;
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                }
+                
+                if (data.complete) {
+                    // Final response is complete
+                    currentResponseDiv.textContent = data.response;
+                    speak(data.response);
+                    eventSource.close();
+                }
+            };
+            
+            eventSource.onerror = function() {
+                // Fallback if streaming fails
+                fetch("/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: `message=${encodeURIComponent(message)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const botResponse = data.response;
+                    currentResponseDiv.className = "bot";
+                    currentResponseDiv.textContent = botResponse;
+                    speak(botResponse);
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                });
+                
+                eventSource.close();
+            };
+        }
+
+        function sendText() {
+            const input = document.getElementById("textInput");
+            if (input.value) {
+                sendMessage(input.value);
+                input.value = "";
+            }
+        }
+
+        function startListening() {
+            // Show a visual indicator that the app is listening
+            const input = document.getElementById("textInput");
+            const originalPlaceholder = input.placeholder;
+            input.placeholder = "Listening...";
+            
+            // Configure speech recognition
+            recognition.lang = "en-US";
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            
+            // Start listening
+            recognition.start();
+            
+            // Handle results
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                input.value = transcript;
+                input.placeholder = originalPlaceholder;
+                sendMessage(transcript);
+            };
+            
+            // Handle errors or end of speech
+            recognition.onerror = () => {
+                input.placeholder = originalPlaceholder;
+            };
+            
+            recognition.onend = () => {
+                input.placeholder = originalPlaceholder;
+            };
+        }
+
+        function speak(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = "en-US";
+            utterance.rate = 1.15; // Default rate
+            utterance.pitch = 0.9; // Default pitch
+            
+            // Try to use the same voice as configured for Oliver if available
+            const savedVoiceIndex = localStorage.getItem('oliverVoiceIndex');
+            const savedRate = localStorage.getItem('oliverVoiceRate') || 1.15;
+            const savedPitch = localStorage.getItem('oliverVoicePitch') || 0.9;
+            
+            // Use saved settings if available
+            utterance.rate = parseFloat(savedRate);
+            utterance.pitch = parseFloat(savedPitch);
+            
+            // Filter for English voices
+            const voices = speechSynthesis.getVoices().filter(voice => voice.lang.includes('en-'));
+            
+            // First try to find Google UK English Male
+            let voiceFound = false;
+            for (let i = 0; i < voices.length; i++) {
+                if (voices[i].name === 'Google UK English Male' && voices[i].lang === 'en-GB') {
+                    utterance.voice = voices[i];
+                    voiceFound = true;
+                    break;
+                }
+            }
+            
+            // If saved voice index exists and is valid, use it
+            if (!voiceFound && savedVoiceIndex !== null && voices.length > parseInt(savedVoiceIndex)) {
+                utterance.voice = voices[parseInt(savedVoiceIndex)];
+            } 
+            // Otherwise fall back to any available English voice
+            else if (!voiceFound && voices.length > 0) {
+                utterance.voice = voices[0];
+            }
+            
+            synth.speak(utterance);
+        }
+        
+        // Allow sending with Enter key
+        document.getElementById("textInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                sendText();
+            }
+        });
+
+        // Function to speak Oliver's last message using the configured voice settings
+        function speakOliversMessage() {
+            // Get the last message from Oliver
+            const messages = document.querySelectorAll('.bot');
+            if (messages.length === 0) return;
+            
+            const lastMessage = messages[messages.length - 1].textContent;
+            
+            // Get saved voice settings from localStorage if available
+            const savedVoiceIndex = localStorage.getItem('oliverVoiceIndex');
+            const savedRate = localStorage.getItem('oliverVoiceRate') || 1.15;
+            const savedPitch = localStorage.getItem('oliverVoicePitch') || 0.9;
+            
+            // Create speech synthesis utterance
+            const utterance = new SpeechSynthesisUtterance(lastMessage);
+            
+            // Force English language
+            utterance.lang = 'en-GB';
+            
+            // Apply voice settings
+            utterance.rate = parseFloat(savedRate);
+            utterance.pitch = parseFloat(savedPitch);
+            
+            // Get available voices and filter for English only
+            const voices = speechSynthesis.getVoices().filter(voice => 
+                voice.lang.includes('en-')
+            );
+            
+            // First try to find Google UK English Male
+            let voiceFound = false;
+            for (let i = 0; i < voices.length; i++) {
+                if (voices[i].name === 'Google UK English Male' && voices[i].lang === 'en-GB') {
+                    utterance.voice = voices[i];
+                    voiceFound = true;
+                    break;
+                }
+            }
+            
+            // If saved voice index exists and is valid, use it
+            if (!voiceFound && savedVoiceIndex !== null && voices.length > parseInt(savedVoiceIndex)) {
+                utterance.voice = voices[parseInt(savedVoiceIndex)];
+            } 
+            // Otherwise fall back to any UK English male voice, or any male voice, or just the first voice
+            else if (!voiceFound) {
+                const ukMaleVoice = voices.find(voice => 
+                    (voice.lang === 'en-GB' || voice.name.includes('UK')) && voice.name.includes('Male')
+                );
+                
+                if (ukMaleVoice) {
+                    utterance.voice = ukMaleVoice;
+                } else {
+                    // Try any male voice
+                    const maleVoice = voices.find(voice => voice.name.includes('Male'));
+                    if (maleVoice) {
+                        utterance.voice = maleVoice;
+                    } else if (voices.length > 0) {
+                        utterance.voice = voices[0];
+                    }
+                }
+            }
+            
+            // Speak
+            speechSynthesis.cancel(); // Cancel any ongoing speech
+            speechSynthesis.speak(utterance);
+        }
+
+        // Make sure voices are loaded
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = function() {
+                // Voices loaded, ready to use
+            };
+        }
+    </script>
+</body>
+</html>
