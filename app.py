@@ -11,7 +11,7 @@ load_dotenv()
 app = Flask(__name__)
 
 # Get API key from environment variable
-CLAUDE_API_KEY = os.environ.get("CLAUDE_API_KEY", "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")
+CLAUDE_API_KEY = os.environ.get("CLAUDE_API_KEY", "")
 CLAUDE_API_URL = "https://api.anthropic.com/v1/messages"
 
 def get_response(user_input):
