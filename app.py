@@ -195,4 +195,7 @@ def stream_chat():
                    mimetype="text/event-stream")
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    # Get port from environment variable or default to 8080
+    port = int(os.environ.get("PORT", 8080))
+    # Run the app, binding to all interfaces (0.0.0.0)
+    app.run(host="0.0.0.0", port=port, debug=False)
